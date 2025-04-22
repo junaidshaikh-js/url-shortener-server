@@ -7,15 +7,18 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "yarn prisma:generate && tsc",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "lint": "eslint ./src",
-    "lint:fix": "eslint ./src --fix",
-    "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky install"
+    "format": "prettier --write .",
+    "lint:fix": "eslint ./src --fix",
+    "lint": "eslint ./src",
+    "prepare": "husky install",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "start": "prisma migrate deploy && node dist/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
     "@eslint/js": "^9.24.0",
@@ -34,7 +37,9 @@
     "typescript-eslint": "^8.29.1"
   },
   "dependencies": {
+    "@prisma/client": "^6.6.0",
     "dotenv": "^16.5.0",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "prisma": "^6.6.0"
   }
 }
