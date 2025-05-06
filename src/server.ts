@@ -1,11 +1,30 @@
-import express from 'express'
+import express, {
+  type NextFunction,
+  type Request,
+  type Response,
+} from 'express'
+
 import config from './config/config'
+import v1Router from './api/v1'
 
 const app = express()
 app.use(express.json())
 
 app.get('/', (req, res) => {
   res.status(200).send('URL Shortener Server')
+})
+
+app.use('/api/v1', v1Router)
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof Error) {
+    res.status(500).json({ ok: false, error: err.message })
+    return
+  }
+
+  // Handle unexpected errors
+  res.status(500).json({ ok: false, error: 'Internal Server Error' })
 })
 
 app.listen(config.port, () => {
