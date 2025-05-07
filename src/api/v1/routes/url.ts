@@ -1,6 +1,6 @@
 import express from 'express'
 
-import { redirectShorten, shorten } from '../controllers/shortener'
+import { redirectShorten, shorten } from '../controllers/url'
 
 const router = express.Router()
 

@@ -27,6 +27,10 @@ app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
   res.status(500).json({ ok: false, error: 'Internal Server Error' })
 })
 
+app.all('*all', (req, res) => {
+  res.status(404).json({ ok: false, error: 'Route not found' })
+})
+
 app.listen(config.port, () => {
   console.log(`Server is running on port ${config.port}`)
 })
