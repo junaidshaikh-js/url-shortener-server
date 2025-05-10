@@ -1,14 +1,14 @@
-import express, {
-  type NextFunction,
-  type Request,
-  type Response,
-} from 'express'
+import type { NextFunction, Request, Response } from 'express'
+import cors from 'cors'
+import express from 'express'
 
 import config from './config/config'
+import corsOptions from './config/cors'
 import v1Router from './api/v1'
 
 const app = express()
 app.use(express.json())
+app.use(cors(corsOptions))
 
 app.get('/', (req, res) => {
   res.status(200).send('URL Shortener Server')
