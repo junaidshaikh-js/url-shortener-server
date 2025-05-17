@@ -7,10 +7,25 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum SignInType {
+  BASIC
+  OAUTH
+}
+
 model ShortCode {
   createdAt DateTime @default(now())
   id Int @id @default(autoincrement())
   longUrl String 
   shortCode String @unique
+  updatedAt DateTime @default(now())
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email String @unique
+  id Int @id @default(autoincrement())
+  name String
+  password String
+  signInType SignInType
   updatedAt DateTime @default(now())
 }
