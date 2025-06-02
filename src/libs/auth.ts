@@ -7,6 +7,14 @@ export const getToken = async (payload: Record<string, unknown>) => {
   return await jwt.sign(payload, config.jwtSecret)
 }
 
+export const verifyToken = async (token: string) => {
+  try {
+    return await jwt.verify(token, config.jwtSecret)
+  } catch {
+    return null
+  }
+}
+
 export const hashPassword = (password: string) => {
   return bcrypt.hash(password, config.saltRounds)
 }
