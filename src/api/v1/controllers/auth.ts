@@ -47,6 +47,7 @@ export const signIn = asyncHandler(async (req, res) => {
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     httpOnly: true,
     secure: config.nodeEnv === 'production',
+    sameSite: config.nodeEnv === 'production' ? 'none' : 'lax',
   })
 
   res.status(200).json({ ok: true, data: { token } })
@@ -93,6 +94,7 @@ export const signUp = asyncHandler(async (req, res) => {
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     httpOnly: true,
     secure: config.nodeEnv === 'production',
+    sameSite: config.nodeEnv === 'production' ? 'none' : 'lax',
   })
 
   res.status(200).json({
