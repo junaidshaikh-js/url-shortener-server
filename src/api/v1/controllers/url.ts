@@ -10,6 +10,7 @@ const ShortenSchema = z.object({
 })
 
 export const shorten = asyncHandler(async (req, res) => {
+  console.log('cookies', req.cookies)
   const { url } = validate(ShortenSchema, req.body)
   const shortCode = await generateUniqueCode()
 
