@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from 'express'
+import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import express from 'express'
 
@@ -9,6 +10,7 @@ import v1Router from './api/v1'
 const app = express()
 app.use(express.json())
 app.use(cors(corsOptions))
+app.use(cookieParser())
 
 app.get('/', (req, res) => {
   res.status(200).send('URL Shortener Server')
