@@ -18,6 +18,8 @@ model ShortCode {
   longUrl String 
   shortCode String @unique
   updatedAt DateTime @default(now())
+  userId Int?
+  user User? @relation(fields: [userId], references: [id])
 }
 
 model User {
@@ -28,4 +30,5 @@ model User {
   password String
   signInType SignInType
   updatedAt DateTime @default(now())
+  shortCodes ShortCode[]
 }
