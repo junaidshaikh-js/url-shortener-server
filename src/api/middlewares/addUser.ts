@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 
 import prisma from '../../prismaClient'
-import { AUTH_TOKEN } from '../../constants'
 import { verifyToken } from '../../libs/auth'
 
 export default async function addUser(
@@ -9,8 +8,8 @@ export default async function addUser(
   res: Response,
   next: NextFunction
 ) {
-  const cookies = req.cookies
-  const token = cookies[AUTH_TOKEN]
+  const { authorization } = req.headers
+  const token = authorization?.split(' ')[1]
 
   if (!token) return next()
 
