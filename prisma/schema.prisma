@@ -20,6 +20,8 @@ model ShortCode {
   updatedAt DateTime @default(now())
   userId Int?
   user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
 }
 
 model User {

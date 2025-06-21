@@ -35,3 +35,24 @@ export const getUserDetails = asyncHandler(async (req, res) => {
     data: userResponse,
   })
 })
+
+export const getUserLinks = asyncHandler(async (req, res) => {
+  const { id } = req.user ?? {}
+
+  const links = await prisma.shortCode.findMany({
+    where: {
+      userId: id,
+    },
+    select: {
+      id: true,
+      longUrl: true,
+      shortCode: true,
+      createdAt: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  })
+
+  res.status(200).json({ ok: true, data: links })
+})
