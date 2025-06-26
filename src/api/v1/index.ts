@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
   res.status(200).send('URL Shortener API v1')
 })
 
-router.use('/', authRouter)
+router.use('/auth', authRouter)
 router.use('/url', urlRouter)
 router.use('/user', userRouter)
 
