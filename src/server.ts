@@ -2,6 +2,8 @@ import type { NextFunction, Request, Response } from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import express from 'express'
+import { Prisma } from '@prisma/client'
+import { ZodError } from 'zod'
 
 import config from './config/config'
 import corsOptions from './config/cors'
@@ -20,6 +22,20 @@ app.use('/api/v1', v1Router)
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
+  console.log({ err })
+  if (err instanceof ZodError) {
+    res.status(400).json({ ok: false, error: err.errors[0].message })
+    return
+  }
+
+  if (err instanceof Prisma.PrismaClientInitializationError) {
+    console.error('Failed to connect to database', err)
+    res
+      .status(500)
+      .json({ ok: false, error: 'Internal Server Error. Try again!' })
+    return
+  }
+
   if (err instanceof Error) {
     res.status(500).json({ ok: false, error: err.message })
     return
