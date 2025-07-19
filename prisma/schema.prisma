@@ -20,6 +20,7 @@ model ShortCode {
   updatedAt DateTime @default(now())
   userId Int?
   user User? @relation(fields: [userId], references: [id])
+  deletedAt DateTime?
 
   @@index([userId, createdAt])
 }
