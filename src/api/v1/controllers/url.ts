@@ -40,6 +40,7 @@ export const redirectShorten = asyncHandler(async (req, res) => {
   const data = await prisma.shortCode.findUnique({
     where: {
       shortCode,
+      deletedAt: null,
     },
     select: {
       longUrl: true,
