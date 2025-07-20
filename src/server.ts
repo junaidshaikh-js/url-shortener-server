@@ -9,6 +9,8 @@ import config from './config/config'
 import corsOptions from './config/cors'
 import logger from './libs/logger'
 import v1Router from './api/v1'
+import cronRouter from './cron/router'
+import './cron'
 
 const app = express()
 app.use(express.json())
@@ -20,6 +22,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/v1', v1Router)
+app.use('/api/cron', cronRouter)
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
