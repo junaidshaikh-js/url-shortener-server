@@ -155,3 +155,33 @@ export const restoreLink = asyncHandler(async (req, res) => {
     throw error
   }
 })
+
+export const deleteLinkPermanent = asyncHandler(async (req, res) => {
+  const { id } = validate(linkIdParams, req.params)
+  const { user } = req
+
+  if (!user) {
+    res.status(401).json({ ok: false, error: 'Unauthorized' })
+    return
+  }
+
+  try {
+    await prisma.shortCode.delete({
+      where: {
+        id: Number(id),
+        userId: user.id,
+      },
+    })
+
+    res.status(200).json({ ok: true, message: 'Link deleted permanently' })
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // "An operation failed because it depends on one or more records that were required but not found"
+      if (error.code === 'P2025') {
+        res.status(404).json({ ok: false, error: 'Link not found' })
+        return
+      }
+    }
+    throw error
+  }
+})
