@@ -1,11 +1,16 @@
 import { format } from 'date-fns'
+import { Prisma } from '@prisma/client'
 import { z } from 'zod'
 
 import asyncHandler from '../../../libs/asyncHandler'
 import prisma from '../../../prismaClient'
 import { validate } from '../../../libs/validation'
 
-export const getUserDetails = asyncHandler(async (req, res) => {
+const linkIdParams = z.object({
+  id: z.string(),
+})
+
+export const getDetails = asyncHandler(async (req, res) => {
   const { email } = req.user ?? {}
 
   const user = await prisma.user.findUnique({
@@ -38,7 +43,7 @@ export const getUserDetails = asyncHandler(async (req, res) => {
   })
 })
 
-export const getUserLinks = asyncHandler(async (req, res) => {
+export const getLinks = asyncHandler(async (req, res) => {
   const { id } = req.user ?? {}
 
   const links = await prisma.shortCode.findMany({
@@ -60,7 +65,7 @@ export const getUserLinks = asyncHandler(async (req, res) => {
   res.status(200).json({ ok: true, data: links })
 })
 
-export const getUserTrashLinks = asyncHandler(async (req, res) => {
+export const getTrashLinks = asyncHandler(async (req, res) => {
   const { id } = req.user ?? {}
 
   const links = await prisma.shortCode.findMany({
@@ -85,12 +90,8 @@ export const getUserTrashLinks = asyncHandler(async (req, res) => {
   res.status(200).json({ ok: true, data: links })
 })
 
-const deleteUserLinkParamsSchema = z.object({
-  id: z.string(),
-})
-
-export const deleteUserLink = asyncHandler(async (req, res) => {
-  const { id } = validate(deleteUserLinkParamsSchema, req.params)
+export const deleteLink = asyncHandler(async (req, res) => {
+  const { id } = validate(linkIdParams, req.params)
   const { user } = req
 
   if (!user) {
@@ -98,26 +99,59 @@ export const deleteUserLink = asyncHandler(async (req, res) => {
     return
   }
 
-  const link = await prisma.shortCode.findUnique({
-    where: {
-      id: Number(id),
-      userId: user.id,
-    },
-  })
+  try {
+    await prisma.shortCode.update({
+      where: {
+        id: Number(id),
+        userId: user.id,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    })
 
-  if (!link) {
-    res.status(404).json({ ok: false, error: 'Link not found' })
+    res.status(200).json({ ok: true, message: 'Link deleted successfully' })
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // "An operation failed because it depends on one or more records that were required but not found"
+      if (error.code === 'P2025') {
+        res.status(404).json({ ok: false, error: 'Link not found' })
+        return
+      }
+    }
+    throw error
+  }
+})
+
+export const restoreLink = asyncHandler(async (req, res) => {
+  const { id } = validate(linkIdParams, req.params)
+  const { user } = req
+
+  if (!user) {
+    res.status(401).json({ ok: false, error: 'Unauthorized' })
     return
   }
 
-  await prisma.shortCode.update({
-    where: {
-      id: link.id,
-    },
-    data: {
-      deletedAt: new Date(),
-    },
-  })
+  try {
+    await prisma.shortCode.update({
+      where: {
+        id: Number(id),
+        userId: user.id,
+      },
+      data: {
+        deletedAt: null,
+      },
+    })
 
-  res.status(200).json({ ok: true, message: 'Link deleted successfully' })
+    res.status(200).json({ ok: true, message: 'Link restored successfully' })
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // "An operation failed because it depends on one or more records that were required but not found"
+      if (error.code === 'P2025') {
+        res.status(404).json({ ok: false, error: 'Link not found' })
+        return
+      }
+    }
+    throw error
+  }
 })
