@@ -5,6 +5,7 @@ import {
   deleteUserLink,
   getUserDetails,
   getUserLinks,
+  getUserTrashLinks,
 } from '../controllers/user'
 
 const router = express.Router()
@@ -14,6 +15,7 @@ router.use(auth)
 router.get('/details', getUserDetails)
 
 router.get('/links', getUserLinks)
+router.get('/links/trash', getUserTrashLinks)
 
 router.delete('/links/:id', deleteUserLink)
 

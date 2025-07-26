@@ -60,6 +60,31 @@ export const getUserLinks = asyncHandler(async (req, res) => {
   res.status(200).json({ ok: true, data: links })
 })
 
+export const getUserTrashLinks = asyncHandler(async (req, res) => {
+  const { id } = req.user ?? {}
+
+  const links = await prisma.shortCode.findMany({
+    where: {
+      userId: id,
+      deletedAt: {
+        not: null,
+      },
+    },
+    select: {
+      id: true,
+      longUrl: true,
+      shortCode: true,
+      createdAt: true,
+      deletedAt: true,
+    },
+    orderBy: {
+      deletedAt: 'desc',
+    },
+  })
+
+  res.status(200).json({ ok: true, data: links })
+})
+
 const deleteUserLinkParamsSchema = z.object({
   id: z.string(),
 })
