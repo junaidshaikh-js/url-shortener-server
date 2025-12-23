@@ -185,3 +185,27 @@ export const deleteLinkPermanent = asyncHandler(async (req, res) => {
     throw error
   }
 })
+
+export const deleteTrashLinks = asyncHandler(async (req, res) => {
+  const { user } = req
+
+  if (!user) {
+    res.status(401).json({ ok: false, error: 'Unauthorized' })
+    return
+  }
+
+  try {
+    await prisma.shortCode.deleteMany({
+      where: {
+        userId: user.id,
+        deletedAt: {
+          not: null,
+        },
+      },
+    })
+
+    res.status(200).json({ ok: true, message: 'Links deleted permanently' })
+  } catch (error) {
+    throw error
+  }
+})
