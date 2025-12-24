@@ -1,17 +1,17 @@
 import express from 'express'
 
-import numberOfShortCodes from './numberOfShortCodes'
+import testCronJob from './testCronJob'
 import logger from '../libs/logger'
 
 const cronRouter = express.Router()
 export default cronRouter
 
-cronRouter.get('/number-of-short-codes', async (req, res) => {
+cronRouter.get('/test-cron', async (req, res) => {
   try {
-    await numberOfShortCodes()
+    await testCronJob()
     res.status(200).json({ ok: true })
   } catch (error) {
-    logger.error('Error: numberOfShortCodes', error)
+    logger.error('Error: testCronJob', error)
     res.status(500).json({ ok: false, error })
   }
 })

@@ -10,7 +10,6 @@ import corsOptions from './config/cors'
 import logger from './libs/logger'
 import v1Router from './api/v1'
 import cronRouter from './cron/router'
-import './cron'
 
 const app = express()
 app.use(express.json())

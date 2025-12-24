@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "crons": [
     {
-      "path": "/api/cron/number-of-short-codes",
+      "path": "/api/cron/test-cron",
       "schedule": "5 0 * * *"
     }
   ]
