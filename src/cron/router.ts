@@ -1,17 +1,17 @@
 import express from 'express'
 
-import testCronJob from './testCronJob'
+import emptyTrash from './emptyTrash'
 import logger from '../libs/logger'
 
 const cronRouter = express.Router()
 export default cronRouter
 
-cronRouter.get('/test-cron', async (req, res) => {
+cronRouter.get('/empty-trash', async (req, res) => {
   try {
-    await testCronJob()
-    res.status(200).json({ ok: true })
+    const count = await emptyTrash()
+    res.status(200).json({ ok: true, message: `Deleted ${count} records` })
   } catch (error) {
-    logger.error('Error: testCronJob', error)
+    logger.error('Error: emptyTrash', error)
     res.status(500).json({ ok: false, error })
   }
 })
