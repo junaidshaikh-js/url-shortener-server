@@ -54,3 +54,54 @@ export const redirectShorten = asyncHandler(async (req, res) => {
 
   res.status(200).json({ ok: true, data })
 })
+
+const UpdateShortUrlSchema = z.object({
+  url: z.string().url({ message: 'Invalid URL' }),
+})
+
+export const updateShortUrl = asyncHandler(async (req, res) => {
+  const { shortCode } = validate(redirectShortenSchema, req.params)
+  const { url } = validate(UpdateShortUrlSchema, req.body)
+  const user = req.user
+
+  if (!user) {
+    res.status(401).json({ ok: false, error: 'Unauthorized' })
+    return
+  }
+
+  const existingShortCode = await prisma.shortCode.findUnique({
+    where: {
+      shortCode,
+      deletedAt: null,
+    },
+  })
+
+  if (!existingShortCode) {
+    res.status(404).json({ ok: false, error: 'Short code not found' })
+    return
+  }
+
+  if (existingShortCode.userId !== user.id) {
+    res.status(403).json({
+      ok: false,
+      error: 'You are not authorized to edit this short code',
+    })
+    return
+  }
+
+  const updatedShortCode = await prisma.shortCode.update({
+    where: {
+      shortCode,
+    },
+    data: {
+      longUrl: url,
+    },
+    select: {
+      id: true,
+      longUrl: true,
+      shortCode: true,
+    },
+  })
+
+  res.status(200).json({ ok: true, data: updatedShortCode })
+})
