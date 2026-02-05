@@ -1,7 +1,6 @@
 import { z } from 'zod'
 
 import asyncHandler from '../../../libs/asyncHandler'
-// import config from '../../../config/config'
 import prisma from '../../../prismaClient'
 import { AUTH_TOKEN } from '../../../constants'
 import { comparePassword, getToken, hashPassword } from '../../../libs/auth'
@@ -43,12 +42,6 @@ export const signIn = asyncHandler(async (req, res) => {
   }
 
   const token = await getToken({ id: user.id, email: user.email })
-  // res.cookie(AUTH_TOKEN, token, {
-  //   expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-  //   httpOnly: true,
-  //   secure: config.nodeEnv === 'production',
-  //   sameSite: config.nodeEnv === 'production' ? 'none' : 'lax',
-  // })
 
   res.status(200).json({ ok: true, data: { token } })
 })
@@ -90,12 +83,6 @@ export const signUp = asyncHandler(async (req, res) => {
   })
 
   const token = await getToken({ id: newUser.id, email: newUser.email })
-  // res.cookie(AUTH_TOKEN, token, {
-  //   expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-  //   httpOnly: true,
-  //   secure: config.nodeEnv === 'production',
-  //   sameSite: config.nodeEnv === 'production' ? 'none' : 'lax',
-  // })
 
   res.status(200).json({
     ok: true,
