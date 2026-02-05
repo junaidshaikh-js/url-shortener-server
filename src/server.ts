@@ -9,7 +9,6 @@ import corsOptions from './config/cors'
 import logger from './libs/logger'
 import v1Router from './api/v1'
 import cronRouter from './cron/router'
-import Env from './env'
 
 const app = express()
 app.use(express.json())
@@ -18,6 +17,14 @@ app.use(cookieParser())
 
 app.get('/', (req, res) => {
   res.status(200).send('URL Shortener Server')
+})
+
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    service: 'URL Shortener Server',
+  })
 })
 
 app.use('/api/v1', v1Router)
@@ -52,6 +59,4 @@ app.all('*all', (req, res) => {
   res.status(404).json({ ok: false, error: 'Route not found' })
 })
 
-app.listen(Env.PORT, () => {
-  logger.info(`Server is running on port ${Env.PORT}`)
-})
+export default app

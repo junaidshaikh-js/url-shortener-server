@@ -31,7 +31,21 @@ const envSchema = z.object({
 
   CORS_ORIGIN: z
     .union([
-      z.string().transform((str) => str.split(',').map((s) => s.trim())),
+      z.string().transform((str) =>
+        str.split(',').map((s) => {
+          const value = s.trim()
+
+          if (value.startsWith('/') && value.lastIndexOf('/') > 0) {
+            const lastSlash = value.lastIndexOf('/')
+            const pattern = value.slice(1, lastSlash)
+            const flags = value.slice(lastSlash + 1)
+
+            return new RegExp(pattern, flags)
+          }
+
+          return value
+        })
+      ),
       z.array(z.string()),
     ])
     .default([]),
