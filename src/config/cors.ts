@@ -1,15 +1,11 @@
 import type { CorsOptions } from 'cors'
 
-import config from './config'
+import Env from '../env'
 
 const corsOptions: CorsOptions = {
   credentials: true,
   methods: ['GET', 'POST', 'DELETE', 'PATCH'],
-  origin: [/url-shortener-client/],
-}
-
-if (config.nodeEnv === 'development') {
-  corsOptions.origin = [/localhost/]
+  origin: Env.CORS_ORIGIN,
 }
 
 export default corsOptions

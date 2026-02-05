@@ -5,11 +5,11 @@ import express from 'express'
 import { Prisma } from '@prisma/client'
 import { ZodError } from 'zod'
 
-import config from './config/config'
 import corsOptions from './config/cors'
 import logger from './libs/logger'
 import v1Router from './api/v1'
 import cronRouter from './cron/router'
+import Env from './env'
 
 const app = express()
 app.use(express.json())
@@ -52,6 +52,6 @@ app.all('*all', (req, res) => {
   res.status(404).json({ ok: false, error: 'Route not found' })
 })
 
-app.listen(config.port, () => {
-  logger.info(`Server is running on port ${config.port}`)
+app.listen(Env.PORT, () => {
+  logger.info(`Server is running on port ${Env.PORT}`)
 })
